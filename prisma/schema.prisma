@@ -10,22 +10,99 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Role {
+model Member {
+  ratings            BookRating[]
+  comments           BookComment[]
+  borrowings         Borrowing[]
+  id                 Int           @id @default(autoincrement())
+  identity_number    String        @unique
+  name               String
+  email              String        @unique
+  password           String
+  address            String
+  city               String
+  phone              String
+  img_identity_photo String?
+  active             Boolean       @default(true)
+  verified           Boolean       @default(false)
+  created_at         DateTime      @default(now())
+  updated_at         DateTime      @default(now())
+}
+
+model Officer {
+  transactions Borrowing[]
+  id           Int         @id @default(autoincrement())
+  name         String
+  email        String      @unique
+  password     String
+  active       Boolean     @default(true)
+  created_at   DateTime    @default(now())
+  updated_at   DateTime    @default(now())
+}
+
+model Category {
+  books      Book[]
   id         Int      @id @default(autoincrement())
   name       String
   active     Boolean  @default(true)
-  users      User[]
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 }
 
-model User {
-  role       Role     @relation(fields: [role_id], references: [id])
-  id         Int      @id @default(autoincrement())
-  name       String
-  active     Boolean  @default(true)
-  verified   Boolean  @default(false)
-  role_id    Int
+model Book {
+  category        Category      @relation(fields: [category_id], references: [id])
+  ratings         BookRating[]
+  comments        BookComment[]
+  borrowings      Borrowing[]
+  id              Int           @id @default(autoincrement())
+  name            String
+  isbn            String
+  author          String
+  publisher       String
+  publishing_city String
+  editor          String
+  img_photo       String?
+  category_id     Int
+  stock           Int           @default(0)
+  active          Boolean       @default(true)
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @default(now())
+}
+
+model BookRating {
+  member       Member   @relation(fields: [member_id], references: [id])
+  book         Book     @relation(fields: [book_id], references: [id])
+  member_id    Int
+  book_id      Int
+  rating_score Float
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now())
+
+  @@id([member_id, book_id])
+}
+
+model BookComment {
+  member     Member   @relation(fields: [member_id], references: [id])
+  book       Book     @relation(fields: [book_id], references: [id])
+  member_id  Int
+  book_id    Int
+  content    String
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
+
+  @@id([member_id, book_id])
+}
+
+model Borrowing {
+  member      Member    @relation(fields: [member_id], references: [id])
+  officer     Officer   @relation(fields: [officer_id], references: [id])
+  book        Book      @relation(fields: [book_id], references: [id])
+  member_id   Int
+  officer_id  Int
+  book_id     Int
+  created_at  DateTime  @default(now())
+  returned_at DateTime?
+  fine        Float
+
+  @@id([member_id, book_id])
 }

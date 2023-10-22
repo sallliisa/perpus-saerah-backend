@@ -1,8 +1,9 @@
-import express from 'express'
+import express, { Handler } from 'express'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 import { router } from 'express-file-routing'
 import path from 'path'
+import { error } from 'console'
 
 const app = express()
 

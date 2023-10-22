@@ -1,4 +1,4 @@
-import { prisma } from "../../utils/db"
+import { prisma } from "../../lib/db"
 
 export const post: Handler = async (req, res) => {
     const result = await (prisma[(req.params.model as any)] as any).create({

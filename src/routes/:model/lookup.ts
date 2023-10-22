@@ -1,4 +1,4 @@
-import { prisma } from "../../utils/db"
+import { prisma } from "../../lib/db"
 
 export const get: Handler = async (req, res) => {
     const params = {
