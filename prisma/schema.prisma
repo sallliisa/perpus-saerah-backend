@@ -74,7 +74,7 @@ model BookRating {
   book         Book     @relation(fields: [book_id], references: [id])
   member_id    Int
   book_id      Int
-  rating_score Float
+  rating_score Int
   created_at   DateTime @default(now())
   updated_at   DateTime @default(now())
 
@@ -84,13 +84,12 @@ model BookRating {
 model BookComment {
   member     Member   @relation(fields: [member_id], references: [id])
   book       Book     @relation(fields: [book_id], references: [id])
+  id         Int      @id @default(autoincrement())
   member_id  Int
   book_id    Int
   content    String
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
-
-  @@id([member_id, book_id])
 }
 
 model Borrowing {

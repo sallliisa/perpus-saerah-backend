@@ -57,7 +57,7 @@ CREATE TABLE "Book" (
 CREATE TABLE "BookRating" (
     "member_id" INTEGER NOT NULL,
     "book_id" INTEGER NOT NULL,
-    "rating_score" REAL NOT NULL,
+    "rating_score" INTEGER NOT NULL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -68,13 +68,12 @@ CREATE TABLE "BookRating" (
 
 -- CreateTable
 CREATE TABLE "BookComment" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "member_id" INTEGER NOT NULL,
     "book_id" INTEGER NOT NULL,
     "content" TEXT NOT NULL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    PRIMARY KEY ("member_id", "book_id"),
     CONSTRAINT "BookComment_member_id_fkey" FOREIGN KEY ("member_id") REFERENCES "Member" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "BookComment_book_id_fkey" FOREIGN KEY ("book_id") REFERENCES "Book" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
