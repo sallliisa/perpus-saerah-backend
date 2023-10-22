@@ -1,0 +1,31 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id         Int      @id @default(autoincrement())
+  name       String
+  active     Boolean  @default(true)
+  users      User[]
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+}
+
+model User {
+  role       Role     @relation(fields: [role_id], references: [id])
+  id         Int      @id @default(autoincrement())
+  name       String
+  active     Boolean  @default(true)
+  verified   Boolean  @default(false)
+  role_id    Int
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now())
+}
