@@ -1,6 +1,6 @@
-import { prisma } from "../../lib/db"
-import configs from "../../configs"
-import { flattenObject } from "../../utils/common"
+import { prisma } from "@/lib/db"
+import configs from "@/configs"
+import { flattenObject } from "@/utils/common"
 import { Handler } from "express"
 
 export const get: Handler = async (req, res) => {
@@ -14,9 +14,8 @@ export const get: Handler = async (req, res) => {
       take: Number(params.limit),
       skip: Number(params.page - 1)*Number(params.limit),
       include: {
-        ...configs[req.params.model]?.relation ? Object.fromEntries(Object.keys(configs[req.params.model].relation).map(key => [key, {select: configs[req.params.model].relation[key].reduce((obj: Record<string, any>, item: string) => Object.assign(obj, {[item]: true}), {})}])): {},
-        ...configs[req.params.model]?.query?.list?.include
-      }
+        ...configs[req.params.model]?.relation
+      },
     })
     res.send({
       total: count,

@@ -1,10 +1,8 @@
 -- CreateTable
 CREATE TABLE "Member" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "user_id" INTEGER NOT NULL,
     "identity_number" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
     "address" TEXT NOT NULL,
     "city" TEXT NOT NULL,
     "phone" TEXT NOT NULL,
@@ -12,26 +10,26 @@ CREATE TABLE "Member" (
     "active" BOOLEAN NOT NULL DEFAULT true,
     "verified" BOOLEAN NOT NULL DEFAULT false,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "updated_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "Member_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
 CREATE TABLE "Officer" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "name" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
+    "user_id" INTEGER NOT NULL,
     "active" BOOLEAN NOT NULL DEFAULT true,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    "updated_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "Officer_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 -- CreateTable
 CREATE TABLE "User" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "ref_id" INTEGER NOT NULL,
     "type" TEXT NOT NULL,
     "active" BOOLEAN NOT NULL DEFAULT true,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -106,13 +104,13 @@ CREATE TABLE "Borrowing" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Member_user_id_key" ON "Member"("user_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Member_identity_number_key" ON "Member"("identity_number");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Member_email_key" ON "Member"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Officer_email_key" ON "Officer"("email");
+CREATE UNIQUE INDEX "Officer_user_id_key" ON "Officer"("user_id");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");

@@ -11,14 +11,13 @@ datasource db {
 }
 
 model Member {
+  user               User          @relation(fields: [user_id], references: [id])
   ratings            BookRating[]
   comments           BookComment[]
   borrowings         Borrowing[]
   id                 Int           @id @default(autoincrement())
+  user_id            Int           @unique
   identity_number    String        @unique
-  name               String
-  email              String        @unique
-  password           String
   address            String
   city               String
   phone              String
@@ -30,21 +29,22 @@ model Member {
 }
 
 model Officer {
+  user         User        @relation(fields: [user_id], references: [id])
   transactions Borrowing[]
   id           Int         @id @default(autoincrement())
-  name         String
-  email        String      @unique
-  password     String
+  user_id      Int         @unique
   active       Boolean     @default(true)
   created_at   DateTime    @default(now())
   updated_at   DateTime    @default(now())
 }
 
 model User {
+  officer    Officer?
+  member     Member?
   id         Int      @id @default(autoincrement())
+  name       String
   email      String   @unique
   password   String
-  ref_id     Int
   type       String
   active     Boolean  @default(true)
   created_at DateTime @default(now())

@@ -3,14 +3,18 @@ import { prisma } from "../lib/db"
 export default {
   book: {
     relation: {
-      category: ['name']
+      category: {
+        select: {
+          name: true
+        }
+      }
     },
     show: {
-      afterExecute: (result: any, req: any, res: any) => {
-        const hasRated = !!prisma.bookRating.findFirst({
+      afterExecute: async (result: any, req: any, res: any) => {
+        const hasRated = !!await prisma.bookRating.findFirst({
           where: {
-            book_id: req.params.id,
-            member_id: 1
+            book_id: Number(req.params.id),
+            member_id: JSON.parse(req.headers.authorization).id
           }
         })
         return {...result, hasRated}
@@ -19,41 +23,85 @@ export default {
   },
   bookRating: {
     relation: {
-      member: ['name']
-    }
+      member: {
+        select: {
+          user: {
+            select: {
+              name: true
+            }
+          }
+        }
+      }
+    },
+    create: {
+      beforeExecute: async (req: any, res: any) => {
+        return {...req.body, member_id: JSON.parse(req.headers.authorization).id}
+      }
+    },
   },
   bookComment: {
     relation: {
-      member: ['name']
-    }
+      member: {
+        select: {
+          user: {
+            select: {
+              name: true
+            }
+          }
+        }
+      }
+    },
+    create: {
+      beforeExecute: async (req: any, res: any) => {
+        return {...req.body, member_id: JSON.parse(req.headers.authorization).id}
+      }
+    },
   },
   member: {
+    relation: {
+      user: {
+        select: {
+          name: true,
+          email: true
+        }
+      }
+    },
     create: {
-      afterExecute: async (result: any, req: any, res: any) => {
+      fields: ['identity_number', 'address', 'city', 'phone', 'img_identity_photo', 'active', 'user_id'],
+      beforeExecute: async (req: any, res: any) => {
         const user = await prisma.user.create({
           data: {
-            email: result.email,
-            password: result.password,
-            ref_id: result.id,
+            name: req.body.user_name,
+            email: req.body.user_email,
+            password: req.body.user_password,
             type: 'member'
           }
         })
-        return {...result, user}
-      }
+        return {...req.body, user_id: user.id}
+      },
     }
   },
   officer: {
+    relation: {
+      user: {
+        select: {
+          name: true,
+          email: true
+        }
+      }
+    },
     create: {
-      afterExecute: async (result: any, req: any, res: any) => {
+      fields: ['active', 'user_id'],
+      beforeExecute: async (req: any, res: any) => {
         const user = await prisma.user.create({
           data: {
-            email: result.email,
-            password: result.password,
-            ref_id: result.id,
+            name: req.body.user_name,
+            email: req.body.user_email,
+            password: req.body.user_password,
             type: 'officer'
           }
         })
-        return {...result, user}
+        return {...req.body, user_id: user.id}
       }
     }
   }
