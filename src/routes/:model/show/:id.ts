@@ -1,6 +1,7 @@
 import { prisma } from "../../../lib/db"
 import configs from "../../../configs"
 import { flattenObject } from "../../../utils/common"
+import { Handler } from "express"
 
 export const get: Handler = async (req, res) => {
   let result = await (prisma[(req.params.model as any)] as any).findUnique({

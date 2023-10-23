@@ -1,3 +1,4 @@
+import { Handler } from "express"
 import { prisma } from "../../../lib/db"
 
 export const del: Handler = async (req, res) => {
