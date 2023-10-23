@@ -28,6 +28,6 @@
   },
   "dependencies": {
     "@prisma/client": "^5.4.2",
-    "@prisma/internals": "^5.4.2"
+    "deepmerge-ts": "^5.1.0"
   }
 }

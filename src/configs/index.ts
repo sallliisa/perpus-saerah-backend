@@ -26,5 +26,35 @@ export default {
     relation: {
       member: ['name']
     }
+  },
+  member: {
+    create: {
+      afterExecute: async (result: any, req: any, res: any) => {
+        const user = await prisma.user.create({
+          data: {
+            email: result.email,
+            password: result.password,
+            ref_id: result.id,
+            type: 'member'
+          }
+        })
+        return {...result, user}
+      }
+    }
+  },
+  officer: {
+    create: {
+      afterExecute: async (result: any, req: any, res: any) => {
+        const user = await prisma.user.create({
+          data: {
+            email: result.email,
+            password: result.password,
+            ref_id: result.id,
+            type: 'officer'
+          }
+        })
+        return {...result, user}
+      }
+    }
   }
 } as Record<string, any>

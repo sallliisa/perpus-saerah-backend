@@ -27,6 +27,18 @@ CREATE TABLE "Officer" (
 );
 
 -- CreateTable
+CREATE TABLE "User" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
+    "ref_id" INTEGER NOT NULL,
+    "type" TEXT NOT NULL,
+    "active" BOOLEAN NOT NULL DEFAULT true,
+    "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateTable
 CREATE TABLE "Category" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "name" TEXT NOT NULL,
@@ -101,3 +113,6 @@ CREATE UNIQUE INDEX "Member_email_key" ON "Member"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Officer_email_key" ON "Officer"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
