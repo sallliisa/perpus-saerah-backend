@@ -19,6 +19,9 @@ export default {
         })
         return {...result, hasRated}
       }
+    },
+    list: {
+      searchable: ["name", "isbn", "author", "publisher"]
     }
   },
   bookRating: {

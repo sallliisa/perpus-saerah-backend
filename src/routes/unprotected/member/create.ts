@@ -1,0 +1,1 @@
+export {post} from '../../protected/:model/create'
