@@ -110,7 +110,9 @@ model Borrowing {
   member_id   Int
   officer_id  Int
   book_id     Int
+  status_code String    @default("ongoing")
   created_at  DateTime  @default(now())
+  updated_at  DateTime  @default(now())
   returned_at DateTime?
-  fine        Float
+  fine        Float?
 }

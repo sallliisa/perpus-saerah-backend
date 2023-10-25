@@ -93,9 +93,11 @@ CREATE TABLE "Borrowing" (
     "member_id" INTEGER NOT NULL,
     "officer_id" INTEGER NOT NULL,
     "book_id" INTEGER NOT NULL,
+    "status_code" TEXT NOT NULL DEFAULT 'ongoing',
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "returned_at" DATETIME,
-    "fine" REAL NOT NULL,
+    "fine" REAL,
     CONSTRAINT "Borrowing_member_id_fkey" FOREIGN KEY ("member_id") REFERENCES "Member" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Borrowing_officer_id_fkey" FOREIGN KEY ("officer_id") REFERENCES "Officer" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Borrowing_book_id_fkey" FOREIGN KEY ("book_id") REFERENCES "Book" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
