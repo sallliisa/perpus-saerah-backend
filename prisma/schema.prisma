@@ -23,7 +23,7 @@ model Member {
   phone              String
   img_identity_photo String?
   active             Boolean       @default(true)
-  verified           Boolean       @default(false)
+  verified           Int           @default(2)
   created_at         DateTime      @default(now())
   updated_at         DateTime      @default(now())
 }
@@ -83,13 +83,12 @@ model Book {
 model BookRating {
   member       Member   @relation(fields: [member_id], references: [id])
   book         Book     @relation(fields: [book_id], references: [id])
+  id           Int      @id @default(autoincrement())
   member_id    Int
   book_id      Int
   rating_score Int
   created_at   DateTime @default(now())
   updated_at   DateTime @default(now())
-
-  @@id([member_id, book_id])
 }
 
 model BookComment {
@@ -107,12 +106,11 @@ model Borrowing {
   member      Member    @relation(fields: [member_id], references: [id])
   officer     Officer   @relation(fields: [officer_id], references: [id])
   book        Book      @relation(fields: [book_id], references: [id])
+  id          Int       @id @default(autoincrement())
   member_id   Int
   officer_id  Int
   book_id     Int
   created_at  DateTime  @default(now())
   returned_at DateTime?
   fine        Float
-
-  @@id([member_id, book_id])
 }

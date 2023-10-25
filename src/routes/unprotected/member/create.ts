@@ -1,1 +1,7 @@
-export {post} from '../../protected/:model/create'
+import { Handler } from 'express'
+import {post as _post} from '../../protected/:model/create'
+
+export const post: Handler = (req, res) => {
+    req.params.model = 'member'
+    return _post(req, res, null)
+}

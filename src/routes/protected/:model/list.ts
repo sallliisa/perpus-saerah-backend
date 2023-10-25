@@ -1,10 +1,12 @@
 import { prisma } from "@/lib/db"
-import configs from "@/configs"
-import { flattenObject } from "@/utils/common"
+import { flattenObject, getModelConfig } from "@/utils/common"
 import { Handler } from "express"
 import { deepmerge } from "deepmerge-ts"
 
 export const get: Handler = async (req, res) => {
+
+    const config = await getModelConfig(req.params.model)
+
     const params = {
       page: 1,
       limit: 10,
@@ -17,20 +19,21 @@ export const get: Handler = async (req, res) => {
       skip: Number(params.page - 1)*Number(params.limit),
     }
 
-    const relationQuery = configs[req.params.model]?.relation ? {
+    const relationQuery = config.relation ? {
       include: {
-        ...configs[req.params.model]?.relation
+        ...config.relation
       },
     } : {}
 
-    const searchFilterQuery = configs[req.params.model]?.list?.searchable?.length && params.search ? {
+    const searchFilterQuery = config.list?.searchable?.length && params.search ? {
       where: {
-        OR: configs[req.params.model].list.searchable.map((item: string) => ({[item]: {contains: params.search}}))
+        OR: config.list.searchable.map((item: string) => ({[item]: {contains: params.search}}))
       }
     } : {}
 
     const count = await (prisma[(req.params.model as any)] as any).count()
     const result = await (prisma[(req.params.model as any)] as any).findMany(deepmerge(baseQuery, {...relationQuery, ...searchFilterQuery}))
+
     res.send({
       total: count,
       totalPage: Math.ceil(count / params.limit),

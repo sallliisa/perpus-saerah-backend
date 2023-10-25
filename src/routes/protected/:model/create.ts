@@ -1,13 +1,16 @@
 import { Handler } from "express"
 import { prisma } from "@/lib/db"
-import configs from "@/configs"
+import { getModelConfig } from "@/utils/common"
 
 export const post: Handler = async (req, res) => {
-    let payload = configs[req.params.model]?.create?.beforeExecute ? await configs[req.params.model]?.create?.beforeExecute(req, res) : req.body
-    payload = configs[req.params.model]?.create?.fields ? Object.fromEntries(configs[req.params.model]?.create?.fields.map((key: string) => [key, payload[key]])) : payload
+
+    const config = await getModelConfig(req.params.model)
+
+    let payload = config.create?.beforeExecute ? await config.create?.beforeExecute(req, res) : req.body
+    payload = config.create?.fields ? Object.fromEntries(config.create?.fields.map((key: string) => [key, payload[key]])) : payload
     let result = await (prisma[(req.params.model as any)] as any).create({
         data: payload
     })
-    if (configs[req.params.model]?.create?.afterExecute) result = await configs[req.params.model]?.create?.afterExecute(result, req, res)
+    if (config.create?.afterExecute) result = await config.create?.afterExecute(result, req, res)
     res.send({data: result})
 }

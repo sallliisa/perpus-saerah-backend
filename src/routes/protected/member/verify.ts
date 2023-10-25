@@ -7,7 +7,7 @@ export const post: Handler = async (req, res) => {
       id: Number(req.body.id)
     },
     data: {
-      verified: true
+      verified: req.body.verification_code
     }
   })
   res.send(result)

@@ -8,7 +8,7 @@ CREATE TABLE "Member" (
     "phone" TEXT NOT NULL,
     "img_identity_photo" TEXT,
     "active" BOOLEAN NOT NULL DEFAULT true,
-    "verified" BOOLEAN NOT NULL DEFAULT false,
+    "verified" INTEGER NOT NULL DEFAULT 2,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "Member_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
@@ -65,13 +65,12 @@ CREATE TABLE "Book" (
 
 -- CreateTable
 CREATE TABLE "BookRating" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "member_id" INTEGER NOT NULL,
     "book_id" INTEGER NOT NULL,
     "rating_score" INTEGER NOT NULL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    PRIMARY KEY ("member_id", "book_id"),
     CONSTRAINT "BookRating_member_id_fkey" FOREIGN KEY ("member_id") REFERENCES "Member" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "BookRating_book_id_fkey" FOREIGN KEY ("book_id") REFERENCES "Book" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
@@ -90,14 +89,13 @@ CREATE TABLE "BookComment" (
 
 -- CreateTable
 CREATE TABLE "Borrowing" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "member_id" INTEGER NOT NULL,
     "officer_id" INTEGER NOT NULL,
     "book_id" INTEGER NOT NULL,
     "created_at" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "returned_at" DATETIME,
     "fine" REAL NOT NULL,
-
-    PRIMARY KEY ("member_id", "book_id"),
     CONSTRAINT "Borrowing_member_id_fkey" FOREIGN KEY ("member_id") REFERENCES "Member" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Borrowing_officer_id_fkey" FOREIGN KEY ("officer_id") REFERENCES "Officer" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Borrowing_book_id_fkey" FOREIGN KEY ("book_id") REFERENCES "Book" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
