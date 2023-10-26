@@ -17,10 +17,20 @@ export const post: Handler = async (req, res) => {
   else data = await prisma.$queryRaw`SELECT officer.*, user.name, user.email, user.type FROM officer INNER JOIN user WHERE user.email=${req.body.email} AND user.password=${req.body.password}`
   data = (data as any)[0]
 
+  let permissions: Array<string> = []
+
+  if (result.type === 'member') {
+    permissions = [
+      'view-borrowing', 'show-borrowing'
+    ]
+  } else {
+    data.role_id = -1
+  }
+
   res.send({
     data: {
       token: JSON.stringify(data),
-      permissions: [],
+      permissions: permissions,
       profile: data
     }
   })
