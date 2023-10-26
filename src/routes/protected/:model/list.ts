@@ -40,10 +40,9 @@ export const get: Handler = async (req, res) => {
     }
   } : {}
 
+  let query = config.list?.queryGenerator ? deepmerge(deepmerge(baseQuery, {...relationQuery, ...deepmerge(searchFilterQuery, dataFilterQuery)}), (await config.list.queryGenerator(req, res, params)) ?? {}) : deepmerge(baseQuery, {...relationQuery, ...searchFilterQuery})
   
-  let query = config.list?.queryGenerator ? deepmerge(deepmerge(baseQuery, {...relationQuery, ...deepmerge(searchFilterQuery, dataFilterQuery)}), (await config.list.queryGenerator(req, res)) ?? {}) : deepmerge(baseQuery, {...relationQuery, ...searchFilterQuery})
-  
-  if (config.list?.beforeExecute) query = await config.list.beforeExecute(query, req, res)
+  if (config.list?.beforeExecute) query = await config.list.beforeExecute(query, req, res, params)
 
   const count = await (prisma[(req.params.model as any)] as any).count()
   const result = await (prisma[(req.params.model as any)] as any).findMany(query)

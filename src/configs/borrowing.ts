@@ -36,7 +36,12 @@ export default {
       if (profile.type === 'member') return {where: {member_id: profile.id}}
       else return {}
     },
-    beforeExecute: async (query: any, res: any) => {
+    beforeExecute: async (query: any, req: any, res: any, params: any) => {
+      await prisma.$queryRaw`
+        UPDATE borrowing
+        SET status_code='overdue'
+        WHERE (julianday('now') - julianday(datetime(ROUND(Cast(created_at as Integer)/1000), 'unixepoch', 'localtime'))) > 14
+      `
       return query
     }
   },
