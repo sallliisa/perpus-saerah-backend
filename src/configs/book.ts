@@ -11,13 +11,13 @@ export default {
   },
   show: {
     afterExecute: async (result: any, req: any, res: any) => {
-      const hasRated = req.headers.authorization ? !!await prisma.bookRating.findFirst({
+      const user_rating = req.headers.authorization ? await prisma.bookRating.findFirst({
         where: {
           book_id: Number(req.params.id),
           member_id: JSON.parse(req.headers.authorization).id
         }
       }) : null
-      return {...result, hasRated, img_photo: {file: result.img_photo, preview: `${config.base_url}/storage/${result.img_photo}`}}
+      return {...result, user_rating, img_photo: {file: result.img_photo, preview: `${config.base_url}/storage/${result.img_photo}`}}
     }
   },
   create: {
