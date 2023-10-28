@@ -3,7 +3,6 @@ import { existsSync } from "fs";
 import config from "config";
 
 export const post: Handler = async (req, res) => {
-  console.log(req.files)
   Object.values(req.files).forEach((file: any) => {
     while (existsSync(`storage/${file.name}`)) file.name = `d_${file.name}`
     file.mv(`storage/${file.name}`, (err: any) => {
