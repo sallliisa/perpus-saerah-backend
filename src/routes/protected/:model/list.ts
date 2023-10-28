@@ -45,10 +45,15 @@ export const get: Handler = async (req, res) => {
   if (config.list?.beforeExecute) query = await config.list.beforeExecute(query, req, res, params)
 
   const count = await (prisma[(req.params.model as any)] as any).count()
-  const result = await (prisma[(req.params.model as any)] as any).findMany(query)
+  let result = (await (prisma[(req.params.model as any)] as any).findMany(query)).map((item: Record<string, any>) => flattenObject(item))
+
+  if (config.show?.afterExecute) {
+    result = await config.list.afterExecute(result, req, res)
+  }
+
   res.send({
     total: count,
     totalPage: Math.ceil(count / params.limit),
-    data: result.map((item: Record<string, any>) => flattenObject(item))
+    data: result
   })
 }
