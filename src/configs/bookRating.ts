@@ -26,4 +26,7 @@ export default {
       };
     },
   },
+  list: {
+    filterable: ["book_id"]
+  }
 };

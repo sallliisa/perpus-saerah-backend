@@ -35,12 +35,14 @@ export const get: Handler = async (req, res) => {
   const dataFilterQuery = config.list?.filterable?.length ? {
     where: {
       OR: config.list.filterable.map((item: any) => params[item]).filter((item: any) => item != null).length > 0 ? config.list.filterable.map((item: string) => {
-        if (params[item]) return ({[item]: {equals: params[item]}})
+        if (params[item]) return ({[item]: {equals: isNaN(params[item]) ? params[item] : Number(params[item])}})
       }).filter((item: any) => item != null) : undefined
     }
   } : {}
 
-  let query = config.list?.queryGenerator ? deepmerge(deepmerge(baseQuery, {...relationQuery, ...deepmerge(searchFilterQuery, dataFilterQuery)}), (await config.list.queryGenerator(req, res, params)) ?? {}) : deepmerge(baseQuery, {...relationQuery, ...searchFilterQuery})
+  
+  let query = config.list?.queryGenerator ? deepmerge(deepmerge(baseQuery, {...relationQuery, ...deepmerge(searchFilterQuery, dataFilterQuery)}), (await config.list.queryGenerator(req, res, params)) ?? {}) : deepmerge(baseQuery, deepmerge({...relationQuery, ...deepmerge(searchFilterQuery, dataFilterQuery)}))
+  console.log(req.params.model, deepmerge(baseQuery, {...relationQuery, ...deepmerge(searchFilterQuery, dataFilterQuery)}))
   
   if (config.list?.beforeExecute) query = await config.list.beforeExecute(query, req, res, params)
 
